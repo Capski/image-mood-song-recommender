@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Mood Song Recommender</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2980b9;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #2980b9;
+        }
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .steps {
+            margin-top: 40px;
+        }
+        .step {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .step:before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+        }
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Mood Song Recommender</h1>
+        
+        <div class="info-box">
+            <p>This application analyzes uploaded images to detect dominant colors and mood, then recommends songs from Spotify that match the detected mood.</p>
+        </div>
+        
+        <div class="button-container">
+            <p>Ready to try it out? Deploy your own instance using the code below!</p>
+            <a href="https://github.com/Capski/image-mood-song-recommender" class="button">View on GitHub</a>
+        </div>
+        
+        <div class="steps">
+            <h2>Getting Started</h2>
+            <div class="step">Clone the repository: <code>git clone https://github.com/Capski/image-mood-song-recommender.git</code></div>
+            <div class="step">Install dependencies: <code>pip install -r requirements.txt</code></div>
+            <div class="step">Add your Spotify API credentials to a <code>.env</code> file</div>
+            <div class="step">Run the application: <code>python app.py</code></div>
+        </div>
+        
+        <div class="steps">
+            <h2>Features</h2>
+            <div class="step">Extract dominant colors using K-means clustering</div>
+            <div class="step">Map colors to moods based on color psychology</div>
+            <div class="step">Get song recommendations from Spotify based on detected mood</div>
+            <div class="step">Simple and intuitive user interface</div>
+        </div>
+        
+        <div class="info-box">
+            <p><strong>Note:</strong> This app requires server-side processing with Python and access to the Spotify API. GitHub Pages only hosts static content, so you'll need to deploy the full application to a platform like Heroku or Render.</p>
+        </div>
+        
+        <footer>
+            <p>Created with ❤️ • <a href="https://github.com/Capski/image-mood-song-recommender">GitHub Repository</a></p>
+        </footer>
+    </div>
+</body>
+</html>
