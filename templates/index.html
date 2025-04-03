@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Mood Song Recommender</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        #upload-form {
+            margin-bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #results {
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 300px;
+        }
+        #colors-display {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+            height: 50px;
+        }
+        .color-box {
+            width: 50px;
+            height: 50px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+        }
+        #album-art {
+            max-width: 150px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        #loading {
+            display: none;
+            margin-top: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="file"] {
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Mood Song Recommender</h1>
+
+    <form id="upload-form">
+        <input type="file" id="file-input" name="file" accept="image/*" required>
+        <button type="submit">Get Recommendation</button>
+    </form>
+
+    <div id="loading">Loading...</div>
+
+    <div id="results" style="display: none;">
+        <h2>Results</h2>
+        <div>
+            <strong>Dominant Colors:</strong>
+            <div id="colors-display"></div>
+        </div>
+        <p><strong>Detected Mood:</strong> <span id="mood"></span></p>
+        <p><strong>Selected Genre:</strong> <span id="genre"></span></p>
+        <h3>Recommended Song:</h3>
+        <p>
+            <strong id="song-title"></strong> by <span id="song-artist"></span>
+        </p>
+        <img id="album-art" src="" alt="Album Art" style="display: none;">
+        <p><a id="spotify-link" href="#" target="_blank">Listen on Spotify</a></p>
+        <p id="error-message" style="color: red;"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('upload-form');
+        const fileInput = document.getElementById('file-input');
+        const resultsDiv = document.getElementById('results');
+        const colorsDisplay = document.getElementById('colors-display');
+        const moodSpan = document.getElementById('mood');
+        const genreSpan = document.getElementById('genre');
+        const songTitle = document.getElementById('song-title');
+        const songArtist = document.getElementById('song-artist');
+        const albumArt = document.getElementById('album-art');
+        const spotifyLink = document.getElementById('spotify-link');
+        const errorMessage = document.getElementById('error-message');
+        const loadingDiv = document.getElementById('loading');
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            resultsDiv.style.display = 'none';
+            errorMessage.textContent = '';
+            loadingDiv.style.display = 'block';
+            albumArt.style.display = 'none'; // Hide previous art
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/recommend', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                loadingDiv.style.display = 'none';
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                }
+
+                // Display Dominant Colors
+                colorsDisplay.innerHTML = ''; // Clear previous colors
+                data.dominant_colors.forEach(color => {
+                    const colorBox = document.createElement('div');
+                    colorBox.classList.add('color-box');
+                    colorBox.style.backgroundColor = `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+                    colorsDisplay.appendChild(colorBox);
+                });
+
+                // Display Mood
+                moodSpan.textContent = data.mood;
+
+                // Display Recommendation
+                if (data.recommendation && !data.recommendation.error) {
+                    songTitle.textContent = data.recommendation.title;
+                    songArtist.textContent = data.recommendation.artist;
+                    spotifyLink.href = data.recommendation.spotify_link;
+                    genreSpan.textContent = data.recommendation.genre || '';
+                    if (data.recommendation.album_art) {
+                        albumArt.src = data.recommendation.album_art;
+                        albumArt.style.display = 'block';
+                    } else {
+                         albumArt.style.display = 'none';
+                    }
+                     spotifyLink.style.display = 'block';
+                } else {
+                    songTitle.textContent = "No recommendation found.";
+                    songArtist.textContent = "";
+                    genreSpan.textContent = "";
+                    spotifyLink.href = "#";
+                    spotifyLink.style.display = 'none';
+                     albumArt.style.display = 'none';
+                    if(data.recommendation && data.recommendation.error){
+                        errorMessage.textContent = `Spotify Error: ${data.recommendation.error}`;
+                    }
+                }
+
+                resultsDiv.style.display = 'block';
+
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                console.error('Error during fetch:', error);
+                errorMessage.textContent = `Error: ${error.message}`;
+                resultsDiv.style.display = 'block'; // Show results div to display the error
+                 // Clear previous results if error occurs
+                 colorsDisplay.innerHTML = '';
+                 moodSpan.textContent = '-';
+                 genreSpan.textContent = '';
+                 songTitle.textContent = "Error fetching recommendation.";
+                 songArtist.textContent = "";
+                 spotifyLink.href = "#";
+                 spotifyLink.style.display = 'none';
+                 albumArt.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
