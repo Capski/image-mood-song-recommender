@@ -1,0 +1,47 @@
+# Python-related
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment & secrets
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flask-related
+instance/
+.webassets-cache
+
+# Folder config file
+Desktop.ini
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Image upload folder
+uploads/
+
+# OS specific files
+.DS_Store
+Thumbs.db
