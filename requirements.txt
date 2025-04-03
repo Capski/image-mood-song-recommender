@@ -1,0 +1,9 @@
+opencv-python
+numpy
+scikit-learn
+matplotlib
+requests
+Flask
+python-dotenv
+Pillow
+gunicorn
